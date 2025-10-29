@@ -78,6 +78,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Setup Java (JDK 11) et Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "11"
+          maven-version: '3.8.8'
+          cache: "maven"
+
+      - name: Générer le Maven Wrapper (mvnw)
+        working-directory: ./back
+        run: mvn wrapper:wrapper
+
+      - name: Compiler le code Java (pour que Sonar trouve les .class)
+        working-directory: ./back
+        run: ./mvnw compile
 
       - name: Download rapport Jacoco (Back)
         uses: actions/download-artifact@v4
