@@ -89,7 +89,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lcov-report
-          path: front/coverage/bobapp-front/
+          path: front/coverage/bobapp/
 
       - name: Analyse SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
