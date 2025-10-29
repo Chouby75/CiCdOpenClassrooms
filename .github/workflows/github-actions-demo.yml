@@ -25,8 +25,9 @@ jobs:
           java-version: "11"
           cache: "maven"
 
-      - name: Lancer les tests maven
-        run: ./back/mvnw -f back/pom.xml clean verify
+      - name: Lancer les tests Maven
+        working-directory: ./back
+        run: ./mvnw clean verify
 
       - name: Upload du rapport de couverture (Backend)
         uses: actions/upload-artifact@v4
