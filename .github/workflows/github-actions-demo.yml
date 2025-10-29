@@ -7,7 +7,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_BACK_REPO: bobapp-back
-  DOCKERHUB_FRONT_REPO: bobapp-Front
+  DOCKERHUB_FRONT_REPO: bobapp-front
 
 jobs:
   test-backend:
@@ -26,7 +26,7 @@ jobs:
           maven-version: '3.8.8'
           cache: "maven"
 
-      - name: 🔽 Générer le Maven Wrapper (mvnw)
+      - name: Générer le Maven Wrapper (mvnw)
         working-directory: ./back
         run: mvn wrapper:wrapper
 
@@ -74,7 +74,7 @@ jobs:
     needs: [test-backend, test-frontend]
 
     steps:
-      - name: checkout du code (avec l'historique complet)
+      - name: checkout du code (avec un historique complet)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
