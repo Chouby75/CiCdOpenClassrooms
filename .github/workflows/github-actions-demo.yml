@@ -23,7 +23,12 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "11"
+          maven-version: '3.8.8'
           cache: "maven"
+
+      - name: 🔽 Générer le Maven Wrapper (mvnw)
+        working-directory: ./back
+        run: mvn wrapper:wrapper
 
       - name: Lancer les tests Maven
         working-directory: ./back
