@@ -43,7 +43,7 @@ jobs:
         run: >
           ./mvnw clean verify sonar:sonar
           -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_BACK }}
-          -Dsonar.organization="Chouby75"
+          -Dsonar.organization="chouby75"
           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
           -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
