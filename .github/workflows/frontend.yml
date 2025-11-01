@@ -47,7 +47,7 @@ jobs:
           projectBaseDir: front
           args: >
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_FRONT }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.organization="Chouby75"
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
             -Dsonar.sources=.
