@@ -1,0 +1,76 @@
+name: ☕ Backend CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'back/**'
+      - '.github/workflows/backend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'back/**'
+      - '.github/workflows/backend.yml'
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_BACK_REPO: bobapp-back
+
+jobs:
+  build-test-scan:
+    name: Build, Test & Scan Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout du code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java (JDK 17) et Maven
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+          maven-version: '3.8.8'
+          cache: "maven"
+
+      - name: Générer le Maven Wrapper (mvnw)
+        working-directory: ./back
+        run: mvn wrapper:wrapper
+
+      - name: Lancer les tests, la couverture ET l'analyse Sonar
+        working-directory: ./back
+        run: >
+          ./mvnw clean verify sonar:sonar
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_BACK }}
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  push-docker:
+    name: 🐳 Push Docker Image (Backend)
+    runs-on: ubuntu-latest
+    needs: build-test-scan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: checkout du code
+        uses: actions/checkout@v4
+
+      - name: Login sur Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build et Push Image Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./back
+          file: ./back/Dockerfile
+          push: true
+          tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_BACK_REPO }}:latest
