@@ -26,11 +26,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java (JDK 11) et Maven
+      - name: Setup Java (JDK 17) et Maven
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: "11"
+          java-version: "17"
           maven-version: '3.8.8'
           cache: "maven"
 
