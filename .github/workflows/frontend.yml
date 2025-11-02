@@ -15,9 +15,6 @@ jobs:
   test-and-scan:
     name: SonarQube
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: ./front
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,6 +23,7 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   push-docker:
     name: 🐳 Push Docker Image (Frontend)
