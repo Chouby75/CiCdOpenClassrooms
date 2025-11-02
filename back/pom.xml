@@ -16,7 +16,6 @@
 	<properties>
 		<java.version>11</java.version>
 	  	<sonar.organization>chouby75</sonar.organization>
-		<sonar.projectKey>chouby75_bobapp-backend</sonar.projectKey>
 	</properties>
 	<dependencies>
 		<dependency>
