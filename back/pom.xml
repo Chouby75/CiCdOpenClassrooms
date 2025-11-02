@@ -15,9 +15,7 @@
 	<description>L'application de joke par excellence !</description>
 	<properties>
 		<java.version>11</java.version>
-	</properties>
-	<properties>
-	  <sonar.organization>chouby75</sonar.organization>
+	  	<sonar.organization>chouby75</sonar.organization>
 	</properties>
 	<dependencies>
 		<dependency>
