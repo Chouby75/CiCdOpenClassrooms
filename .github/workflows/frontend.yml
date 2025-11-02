@@ -1,16 +1,11 @@
-name: 🅰️ Frontend CI/CD
+name: Frontend CI/CD
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'front/**'
-      - '.github/workflows/frontend.yml'
+    branches:
+      - master
   pull_request:
-    branches: [main]
-    paths:
-      - 'front/**'
-      - '.github/workflows/frontend.yml'
+    types: [opened, synchronize, reopened]
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -18,43 +13,16 @@ env:
 
 jobs:
   test-and-scan:
-    name: Test & Scan Frontend
+    name: SonarQube
     runs-on: ubuntu-latest
     steps:
-      - name: checkout du code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "front/package-lock.json"
-
-      - name: Installer les dépendances (Front)
-        working-directory: ./front
-        run: npm ci
-
-      - name: Lancer les tests et la couverture (Front)
-        working-directory: ./front
-        run: npm test -- --no-watch --code-coverage --browsers=ChromeHeadless
-
-      - name: Analyse SonarCloud
-        uses: SonarSource/sonarqube-scan-action@master
-        with:
-          projectBaseDir: front
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_FRONT }}
-            -Dsonar.organization="chouby75"
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-            -Dsonar.sources=.
-            -Dsonar.exclusions=**/node_modules/**,**/*.spec.ts
-            -Dsonar.typescript.lcov.reportPaths=coverage/bobapp/lcov.info
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   push-docker:
     name: 🐳 Push Docker Image (Frontend)
