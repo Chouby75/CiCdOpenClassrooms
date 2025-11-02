@@ -21,6 +21,12 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
+        with:
+          # On ajoute 'args' pour configurer le scanner
+          args: >
+            -Dsonar.organization=chouby75
+            -Dsonar.projectKey=chouby75_bobapp-front
+            -Dsonar.projectBaseDir=./front
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
