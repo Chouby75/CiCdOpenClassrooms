@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'front/**'
-      - '.github/workflows/frontend.yml'
+      - 'back/**'
+      - '.github/workflows/backend.yml'
   pull_request:
     types: [opened, synchronize, reopened]
 
