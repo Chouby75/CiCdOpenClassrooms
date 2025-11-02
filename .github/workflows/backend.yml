@@ -1,58 +1,50 @@
-name: ☕ Backend CI/CD
+name: Backend CI/CD
 
 on:
   push:
-    branches: [main]
-    paths:
-      - 'back/**'
-      - '.github/workflows/backend.yml'
+    branches:
+      - master
   pull_request:
-    branches: [main]
-    paths:
-      - 'back/**'
-      - '.github/workflows/backend.yml'
+    types: [opened, synchronize, reopened]
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_BACK_REPO: bobapp-back
 
 jobs:
-  build-test-scan:
-    name: Build, Test & Scan Backend
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
     steps:
-      - name: checkout du code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Setup Java (JDK 17) et Maven
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: "17"
-          maven-version: '3.8.8'
-          cache: "maven"
-
-      - name: Générer le Maven Wrapper (mvnw)
-        working-directory: ./back
-        run: mvn wrapper:wrapper
-
-      - name: Lancer les tests, la couverture ET l'analyse Sonar
-        working-directory: ./back
-        run: >
-          ./mvnw clean verify sonar:sonar
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_BACK }}
-          -Dsonar.organization="chouby75"
-          -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+          java-version: 17
+          distribution: 'zulu'
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build and analyze
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=chouby75_bobapp-backend
 
   push-docker:
     name: 🐳 Push Docker Image (Backend)
     runs-on: ubuntu-latest
-    needs: build-test-scan
+    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - name: checkout du code
