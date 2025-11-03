@@ -39,7 +39,7 @@ jobs:
             -Dsonar.organization=chouby75
             -Dsonar.projectKey=chouby75_bobapp-frontend
             -Dsonar.projectBaseDir=./front
-            -Dsonar.javascript.lcov.reportPaths=./front/coverage/bobapp/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=./coverage/bobapp/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
