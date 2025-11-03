@@ -19,6 +19,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: 1. Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # ou la version que tu utilises (ex: 18, 20, 22)
+
+      - name: 2. Install dependencies
+        run: npm install
+        working-directory: ./front # Indique où se trouve ton package.json
+
+      - name: 3. Run tests and generate coverage
+        run: npm test -- --coverage
+        working-directory: ./front # Lance les tests
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
