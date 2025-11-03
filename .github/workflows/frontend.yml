@@ -29,8 +29,8 @@ jobs:
         working-directory: ./front # Indique où se trouve ton package.json
 
       - name: 3. Run tests and generate coverage
-        run: npm test -- --coverage
-        working-directory: ./front # Lance les tests
+        run: npx ng test --coverage --watch=false --browsers=ChromeHeadless
+        working-directory: ./front
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         with:
@@ -39,6 +39,7 @@ jobs:
             -Dsonar.organization=chouby75
             -Dsonar.projectKey=chouby75_bobapp-frontend
             -Dsonar.projectBaseDir=./front
+            -Dsonar.javascript.lcov.reportPaths=./front/coverage/bobapp/lcov.info
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
