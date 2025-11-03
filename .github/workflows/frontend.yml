@@ -29,7 +29,7 @@ jobs:
         working-directory: ./front # Indique où se trouve ton package.json
 
       - name: 3. Run tests and generate coverage
-        run: npx ng test --coverage --watch=false --browsers=ChromeHeadless
+        run: npx ng test --no-watch --code-coverage
         working-directory: ./front
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
